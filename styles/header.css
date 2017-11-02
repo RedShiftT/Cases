@@ -4,8 +4,13 @@ html, body {
 }
 
 body {
-    background-image: url(res/bg.png);
-    font-family: 'Open Sans', sans-serif;
+    background-color: black;
+    background-image: url(../res/bg.png);
+    user-select: none;   
+}
+
+html {
+    width: 400px;
 }
 
 header {
@@ -16,7 +21,8 @@ header {
     position: fixed;
     top: 0px;
     background-color: rgb(20, 20, 20);
-    display: flex;
+    font-family: 'Open Sans', sans-serif;
+    z-index: 100;
 }
 
 header a h1 {
