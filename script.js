@@ -14,9 +14,10 @@ function getCases(){
 }
 getCases();
 
-function getCase(box) {
+
+function openCase(casik) {
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:591/getCase?case=" + box, true);
+    xhr.open("GET", "http://localhost:591/getCase", true);
     xhr.onreadystatechange = function() {
         if(this.readyState == this.DONE){
             if(this.status != 200){
@@ -25,5 +26,7 @@ function getCase(box) {
             }
         }
     };
-xhr.send();
+    xhr.send();
+
+    $("article").html('<div class="dropCase"><h1>Кейс</h1><input type="button"><div>');
 }

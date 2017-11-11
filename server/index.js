@@ -44,15 +44,14 @@ function checkWidth(x) {
 
 var x = "";
 for(var i = 0; i < cases.length; i++) {
-    x += "<div class='case'><span class='" + checkWidth(cases[i].price) + "'>" + cases[i].price + 
+    x += "<div class='case' onclick='openCase(" + [i] + ")'><span class='" + checkWidth(cases[i].price) + "'>" + cases[i].price + 
     "p</span><img src='res/cases/case" + cases[i].id + 
     ".png'><span class='caseName'>" + cases[i].name + 
     "</span></div>"
 }
 
-app.get("/getCases", function(request, response) {
-    response.send(x);
+app.get("/getCases", function(req, res) {
+    res.send(x);
 });
 
-// пебедный arr[68]
 app.listen(591);
