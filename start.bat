@@ -1,3 +1,3 @@
-cd app
+cd server
 node index.js
 pause

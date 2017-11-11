@@ -20,14 +20,14 @@ article {
     height: 210px;
     width: 210px;
     margin: 1%;
-    border: solid rgb(255, 127, 0) 2px;
-    border-radius: 20px;
+    border: solid limegreen 2px;
+    border-radius: 20px; 
     transition: all ease 0.2s;
 
 }
 
 .case .caseName{
-    color: rgb(255, 127, 0);
+    color: limegreen;
     /* font-size: 20px;; */
     font-family: 'Open Sans', sans-serif;
     /* margin-left: -15%; */
@@ -54,8 +54,8 @@ article {
 .case .caseCost{
     position: relative;
     left: calc(74% + 1px);
-    background-color: rgb(255, 127, 0);
-    border: solid rgb(255, 127, 0) 4px;
+    background-color: limegreen;
+    border: solid limegreen 4px;
     font-family: 'Open Sans', bold;
     font-size: 20px;
     border-bottom-left-radius: 15px;
@@ -90,8 +90,8 @@ article {
 .cheapcase {
     position: relative;
     left: 80%;
-    background-color: rgb(255, 127, 0);
-    border: solid rgb(255, 127, 0) 4px;
+    background-color: limegreen;
+    border: solid limegreen 4px;
     font-family: 'Open Sans', bold;
     font-size: 20px;
     border-bottom-left-radius: 15px;
