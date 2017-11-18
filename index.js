@@ -23,7 +23,7 @@ const cases = [bomjcase, majorcase, premcase, egorcase];
 
 var casesHTML = '';
 for(var i = 0; i < cases.length; i++) {
-    casesHTML += "<div class='case'><a href='http://localhost:8080/Case" + cases[i].id + "'><span class='" + cases[i].price + "'>" + cases[i].price + 
+    casesHTML += "<div class='case'><a href='http://localhost:8080/?case=" + cases[i].id + "'><span class='" + cases[i].price + "'>" + cases[i].price + 
     "p</span><img src='res/cases/case" + cases[i].id + 
     ".png'><span class='caseName'>" + cases[i].name + 
     "</span></a></div>"
@@ -82,12 +82,7 @@ const caseHTML = `<!DOCTYPE html>
 </body>
 </html>`;
 
-var express = require("express");
-// var cors = require("cors");
 
-var app = express();
-
-// app.use(cors());
 
 function compareRandom(a, b) {
         return Math.random() - 0.5;
@@ -114,12 +109,19 @@ const fs = require('fs');
 const http = require('http');
 const url = require('url');
 const qs = require('querystring');
+const express = require("express");
+const cors = require("cors");
 
-app.get("/opCase", function(req, res) {
+const app = express();
+
+app.use(cors());
+
+app.get("/case", function(req, res) {
     var query = url.parse(req.url).query;
     var params = qs.parse(query);
-    
-    res.send(cases[params.case].drop.sort(compareRandom).join(' '));
+    if (params != undefined){
+        res.send(cases[params.case].drop.sort(compareRandom).join(' '));
+    }
     
 });
 app.listen(591);
