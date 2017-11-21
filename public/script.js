@@ -19,12 +19,15 @@ function rand(min, max){
 }
 
 function lotto(arr) {
-    var n = 6900 + rand(-50, 50);
+    var n = 3900 + rand(-50, 50);
     $("#carusel").html(" ");
-    $("#carusel").css("left", "0px");
-    $("#carusel").css("left", "7000");
     for(var i = 0; i < arr.length; i++){
-        $("#carusel").append('<img width="100px" height="100px" src="res/coins/'+arr[i]+'.png">')
+        $("#carusel").append('<img class="drop" width="180px" height="180px" style="left: ' + 10 * i +'px;" src="res/coins/'+arr[i]+'.png">');
     }
-    $("#carusel").animate({left: "-="+n}, 10000);
+    $('#arrow').css('display', '')
+    $("#carusel img").animate({left: "-="+n}, 5000);
+    // $("#carusel img").animate({left: "-="+n}, {duration: 5000, specialEasing: { left: "ease-in" }}); 
 }
+
+var liveDrop = [200, 1000, 1000, 100, 5, 50, 250, 500, 100, 1];
+
