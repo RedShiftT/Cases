@@ -109,12 +109,28 @@ const fs = require('fs');
 const http = require('http');
 const url = require('url');
 const qs = require('querystring');
-const express = require("express");
-const cors = require("cors");
+const express = require('express');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const bodyParser = require('body-parser');
 
 const app = express();
 
+var users = [
+    {username: 'admin', password: '12345'},
+    {username: 'foo', password: 'bar'},
+    {username: 'user', password: 'text'},
+]
+
+var sessionHandler = require('./session_handler');
+var store = sessionHandler.createStore();
+
+app.use(cookieParser());
 app.use(cors());
+app.use(session({
+    
+}));
 
 app.get("/case", function(req, res) {
     var query = url.parse(req.url).query;
@@ -137,11 +153,11 @@ http.createServer(function(req, res) {
         var filePath = 'public' + req.url;
         if (filePath == 'public/') {
             res.writeHead(200, { 'Content-Type': 'text/html' });
-            if(params.case === undefined) {
-                res.end(html);
-            }else{
-                res.end(caseHTML)
-            }
+            // if(params.case === undefined) {
+            //     res.end(html);
+            // }else{
+            //     res.end(caseHTML)
+            // }
         };
 
         var extname = path.extname(filePath);
@@ -175,18 +191,38 @@ http.createServer(function(req, res) {
         });
   }).listen(8080, () => console.log('Все ок'));
 
-// const express = require('express');
-// const passport = require('passport');
-// const session = require('express-session');
-// const RedisStore = require('connect-redis')(session);
-// const app = express();
-// app.use(session({
-//     store: new RedisStore({
-//         url: config.redisStore.url
-//     }),
-//     secret: config.redisStore.secret,
-//     resave: false,
-//     saveUninitialized: false
-// }));
-// app.use(passport.initialize());
-// app.use(passport.session());
+const passport = require('passport');
+const RedisStore = require('connect-redis')(session);
+const LocalStrategy = require('passport-local').Strategy;
+
+app.use(session({
+    store: new RedisStore({
+        url: config.redisStore.url
+    }),
+    secret: config.redisStore.secret,
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+const user = {
+    username: 'test-user',
+    password: 'test-password', id: 1
+}
+passport.use(new LocalStrategy(
+    function(username, password, done) {
+        findUser(username, function (err, user) {
+            if (err) {
+                return done(err)
+            }
+            if (!user) {
+                return done(null, false)
+            }
+            if (password !== user.password ) {
+                return done(null, false)
+            }
+            return done(null, user)
+        })
+    }
+))
