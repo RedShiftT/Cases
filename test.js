@@ -9,7 +9,10 @@ const url = require('url');
 const qs = require('querystring');
 const fs = require('fs');
 
+const html = require('./html');
+
 const app = express();
+app.use(cors());
 
 var jsonParser = bodyParser.json();
 app.use(jsonParser);
@@ -19,7 +22,7 @@ var users = [
     {username: 'user', pass: '12345'}
 ];
 
-// var store = require('./session_handler.js').createStore();
+var store = require('./session_handler.js').createStore();
 
 
 app.use(cookieParser());
@@ -30,7 +33,7 @@ app.use(session({
     secret: 'supersecret'
 }));
 
-app.post('/login', () =>{
+app.post('/login', (req, res) =>{
     var fondUser;
     console.log('пришел запрос');
     for(var i = 0; i < users.length; i++){
@@ -42,41 +45,54 @@ app.post('/login', () =>{
     if(fondUser != undefined){
         req.session.username = req.body.username;
         console.log('loged:' + req.body.username);
-        res.send('logined: '+req.body.username);
+        res.send('loged: ' + req.body.username);
     }else{
         console.log('loggin failed: '+req.body.username);
         res.status(401).send('login error');
     }
 });
 
-app.listen(8080, () => {console.log('Модуль авторизации работает')});
+app.listen(591);
 
 http.createServer(function(req, res) {
-    var query = url.parse(req.url).query,
-    params = qs.parse(query);
+    var query = url.parse(req.url).query;
+    var params = qs.parse(query);
+    
+    console.log('запрос '+req.url);
+    console.log('Параметры: ');
+    console.log(params);
+    console.log(params.case);
 
     var filePath = 'public' + req.url;
     if (filePath == 'public/') {
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        // if(params.case === undefined) {
-        //     res.end(html);
-        // }else{
-        //     res.end(caseHTML)
-        // }
-        filePath += 'index.html'
-    };
+        if(params == {} ){
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(html.html);
+        } else if(typeof params.case !== "number") {
+            res.writeHead(404, { 'Content-Type': 'text/html' });
+            res.end('<h1>404</h1>')
+        } else{
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(html.caseHTML(params.case, 'admin'));
+        }
+    }
+    // if((filePath == 'public/' && query.case !== undefined)) {
+    // } else {
+    //     res.writeHead(404, { 'Content-Type': 'text/html' });
+    //     res.end('404');
+    // }
 
     var extname = path.extname(filePath);
     var contentType = 'text/html';
 
-    // switch (extname) {
-    //     case '.js':
-    //         contentType = 'text/javascript'; break;
-    //     case '.css':
-    //         contentType = 'text/css'; break;
-    //     case '.png':
-    //         contentType = 'image/png'; break;
-    // }
+    switch (extname) {
+        case '.js':
+            contentType = 'text/javascript'; break;
+        case '.css':
+            contentType = 'text/css'; break;
+        case '.png':
+            contentType = 'image/png'; break;
+    }
     
     fs.readFile(filePath, function(error, content) {
         if (error) {

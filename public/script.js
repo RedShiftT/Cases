@@ -1,6 +1,6 @@
 $('#submit').on('click', () => {
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/login');
+    xhr.open('POST', 'http://localhost:591/login');
     
     var userdata = {
         username: $('#username').val(),

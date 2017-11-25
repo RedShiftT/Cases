@@ -116,18 +116,18 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 
 const app = express();
+app.use(cors());
 
 var users = [
     {username: 'admin', password: '12345'},
     {username: 'foo', password: 'bar'},
     {username: 'user', password: 'text'},
-]
+];
 
 var sessionHandler = require('./session_handler');
 var store = sessionHandler.createStore();
 
 app.use(cookieParser());
-app.use(cors());
 app.use(session({
     
 }));
@@ -145,19 +145,19 @@ app.listen(591);
 http.createServer(function(req, res) {
     
     // console.log(req.url);
-    var query = url.parse(req.url).query,
-        params = qs.parse(query);
+    var query = url.parse(req.url).query;
+    var params = qs.parse(query);
 
         
 
         var filePath = 'public' + req.url;
         if (filePath == 'public/') {
             res.writeHead(200, { 'Content-Type': 'text/html' });
-            // if(params.case === undefined) {
-            //     res.end(html);
-            // }else{
-            //     res.end(caseHTML)
-            // }
+            if(params.case === undefined) {
+                res.end(html);
+            }else{
+                res.end(caseHTML)
+            }
         };
 
         var extname = path.extname(filePath);
