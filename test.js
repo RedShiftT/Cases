@@ -8,74 +8,86 @@ const http = require('http');
 const url = require('url');
 const qs = require('querystring');
 const fs = require('fs');
-
 const html = require('./html');
+const connect = require('connect');
 
-const app = express();
-app.use(cors());
+// const app = express();
 
-var jsonParser = bodyParser.json();
-app.use(jsonParser);
+// // app.use(express.cookieDecoder());
+// app.use(connect.session({ secret: 'your secret here', cookie} ));
+// app.use(cors());
 
-var users = [
-    {username: 'admin', pass: 'admin'},
-    {username: 'user', pass: '12345'}
-];
+// var jsonParser = bodyParser.json();
+// app.use(jsonParser);
 
-var store = require('./session_handler.js').createStore();
+// var users = [
+//     {username: 'admin', pass: 'admin'},
+//     {username: 'user', pass: '12345'}
+// ];
+
+// var store = require('./session_handler.js').createStore();
 
 
-app.use(cookieParser());
-app.use(session({
-    store: store,
-    resave: false,
-    saveUninitialized: false,
-    secret: 'supersecret'
-}));
+// app.use(cookieParser());
+// app.use(session({
+//     store: store,
+//     resave: false,
+//     saveUninitialized: false,
+//     secret: 'supersecret'
+// }));
 
-app.post('/login', (req, res) =>{
-    var fondUser;
-    console.log('пришел запрос');
-    for(var i = 0; i < users.length; i++){
-        var u = users[i];
-        if (u.username == req.body.username && u.pass == req.body.pass) {
-            fondUser = u.username;
-        }
-    }
-    if(fondUser != undefined){
-        req.session.username = req.body.username;
-        console.log('loged:' + req.body.username);
-        res.send('loged: ' + req.body.username);
-    }else{
-        console.log('loggin failed: '+req.body.username);
-        res.status(401).send('login error');
-    }
-});
-
-app.listen(591);
+// app.post('/login', (req, res) =>{
+//     var fondUser;
+//     console.log('пришел запрос');
+//     for(var i = 0; i < users.length; i++){
+//         var u = users[i];
+//         if (u.username == req.body.username && u.pass == req.body.pass) {
+//             fondUser = u.username;
+//         }
+//     }
+//     if(fondUser != undefined){
+//         req.session.username = req.body.username;
+//         req.session.authorized = true;
+//         console.log('loged:' + req.body.username);
+//         res.send('loged: ' + req.body.username);
+//     }else{
+//         console.log('login failed: '+req.body.username);
+//         res.status(401).send('login error');
+//     }
+// });
+// 
+// app.listen(591);
 
 http.createServer(function(req, res) {
     var query = url.parse(req.url).query;
     var params = qs.parse(query);
-    
-    console.log('запрос '+req.url);
-    console.log('Параметры: ');
+    console.log('ЗАПРОС ' + req.url);
+    // console.log(req.session.username);
     console.log(params);
     console.log(params.case);
+    console.log(+params.case);
+    console.log(typeof +params.case);
 
     var filePath = 'public' + req.url;
+    console.log(filePath);
     if (filePath == 'public/') {
-        if(params == {} ){
-            res.writeHead(200, { 'Content-Type': 'text/html' });
-            res.end(html.html);
-        } else if(typeof params.case !== "number") {
+        console.log('html');
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(html.html);
+    }
+    if (Object.keys(params).length != 0) {
+        console.log('!!!'+params.case);
+        if(+params.case == NaN) {
+            console.log('левый парамс');
             res.writeHead(404, { 'Content-Type': 'text/html' });
             res.end('<h1>404</h1>')
         } else{
+            console.log('все ок');
             res.writeHead(200, { 'Content-Type': 'text/html' });
             res.end(html.caseHTML(params.case, 'admin'));
         }
     }
+    
     // if((filePath == 'public/' && query.case !== undefined)) {
     // } else {
     //     res.writeHead(404, { 'Content-Type': 'text/html' });

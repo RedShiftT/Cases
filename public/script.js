@@ -6,11 +6,18 @@ $('#submit').on('click', () => {
         username: $('#username').val(),
         pass: $('#pass').val()
     }
-
-    console.log(userdata);
-
+    
     xhr.setRequestHeader('Content-type', 'application/json');
     xhr.send(JSON.stringify(userdata));
+    xhr.onload = function() {
+        alert(this.responseText);
+    }
+});
+
+$('#sprosit').on('click',() => {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://localhost:591/check');
+    xhr.send();
     xhr.onload = function() {
         alert(this.responseText);
     }
