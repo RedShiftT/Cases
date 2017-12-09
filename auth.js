@@ -15,12 +15,26 @@ const connect = require('connect');
 const app = express();
 app.use(cors());
 
-// var db = mongoose.connect(app.set('db-uri'));
-app.use(cookieParser());    
-app.use(connect.session({ secret: 'your secret here'} ));
+app.use(connect.cookieParser());
 
-// app.use(express.cookieDecoder());
-// app.use(connect.session({ secret: 'your secret here', cookie} ));
+app.configure('development', () => {
+    app.set('db-uri', 'mongodb://localhost/nodepad-development');
+});
+
+var db = mongoose.connect(app.set('db-uri'));
+
+function mongoStoreConnectionArgs() {
+    return { 
+        dbname: sessions,
+        host: "localhost",
+        port: 27017,
+        username: "admin",
+        password: "admin" };
+    }
+
+app.use(express.session({
+    store: mongoStore(mongoStoreConnectionArgs())
+}));
 
 var jsonParser = bodyParser.json();
 app.use(jsonParser);
